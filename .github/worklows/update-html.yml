@@ -1,0 +1,46 @@
+# .github/workflows/update-html.yml
+
+name: Update HTML from Excel
+
+# 觸發條件：當 data 資料夾中的任何 .xlsx 檔案被推送到 main 分支時觸發
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/**.xlsx'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 虛擬機
+
+    steps:
+      # 步驟 1: 取得你的儲存庫程式碼
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 步驟 2: 設定 Python 環境
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' # 指定 Python 版本
+
+      # 步驟 3: 安裝 Python 依賴套件
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 步驟 4: 運行我們的 Python 腳本來生成 index.html
+      - name: Run script to generate HTML
+        run: python process_excel.py
+
+      # 步驟 5: 將新生成的 index.html 檔案 commit 並 push 回儲存庫
+      # 這會觸發 GitHub Pages 的更新
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          # 如果檔案有變動，才執行 commit 和 push
+          git diff --staged --quiet || (git commit -m "Automated: Update index.html from Excel" && git push)
