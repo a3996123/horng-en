@@ -4,7 +4,7 @@ import os
 # --- 設定 ---
 EXCEL_FILE_PATH = 'data/your_data.xlsx'
 HTML_OUTPUT_PATH = 'index.html'
-PAGE_TITLE = 'Excel 內容查詢'
+PAGE_TITLE = '宏恩產品查詢'
 
 # --- HTML 模板 ---
 html_template = """
